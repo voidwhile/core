@@ -986,6 +986,6 @@ fieldset.warning legend + p, fieldset.update legend + p {
     }
     #body-login p.info {
         margin: 0 auto;
-        padding-top: 40px;
+        padding-top: 35px;
     }
 }
