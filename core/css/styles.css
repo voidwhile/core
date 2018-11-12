@@ -980,7 +980,7 @@ fieldset.warning legend + p, fieldset.update legend + p {
    -ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=0)";
 }
 
-@media only screen and (max-width: 10300px) {
+@media only screen and (max-width: 1030px) {
     #body-login .v-align {
         margin-top: 30px;
     }
