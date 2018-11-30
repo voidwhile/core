@@ -107,7 +107,8 @@ class WebDavHelper {
 		$sourceIpAddress = null,
 		$authType = "basic",
 		$stream = false,
-		$timeout = 0
+		$timeout = 0,
+		$client = null
 	) {
 		$baseUrl = self::sanitizeUrl($baseUrl, true);
 		$davPath = self::getDavPath($user, $davPathVersionToUse, $type);
@@ -144,7 +145,7 @@ class WebDavHelper {
 
 		return HttpRequestHelper::sendRequest(
 			$fullUrl, $method, $user, $password, $headers, $body, $config, null,
-			$stream, $timeout
+			$stream, $timeout, $client
 		);
 	}
 
