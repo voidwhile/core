@@ -59,9 +59,13 @@ class HttpRequestHelper {
 		$config = null,
 		$cookies = null,
 		$stream = false,
-		$timeout = 0
+		$timeout = 0,
+		$client =  null
 	) {
-		$client = new Client();
+		if ($client === null) {
+			$client = new Client();
+		}
+
 		$options = [];
 		if ($user !== null) {
 			$options['auth'] = [$user, $password];
