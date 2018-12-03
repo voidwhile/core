@@ -376,6 +376,78 @@ Feature: sharing
       | 1               | 400             | 200              |
       | 2               | 400             | 400              |
 
+  Scenario Outline: user who is excluded from sharing tries to share a file with another user
+    Given using OCS API version "<ocs_api_version>"
+    And user "user1" has been created with default attributes
+    And group "excludedFromSharing" has been created
+    And user "user0" has been added to group "excludedFromSharing"
+    And parameter "shareapi_exclude_groups" of app "core" has been set to "yes"
+    And parameter "shareapi_exclude_groups_list" of app "core" has been set to '["excludedFromSharing"]'
+    And user "user0" has moved file "welcome.txt" to "fileToShare.txt"
+    When user "user0" shares file "fileToShare.txt" with user "user1" using the sharing API
+    Then the OCS status code should be "<ocs_status_code>"
+    And the HTTP status code should be "<http_status_code>"
+    And as "user1" file "fileToShare.txt" should not exist
+    Examples:
+      | ocs_api_version | ocs_status_code | http_status_code |
+      | 1               | 403             | 200              |
+      | 2               | 403             | 403              |
+
+  Scenario Outline: user who is excluded from sharing tries to share a file with a group
+    Given using OCS API version "<ocs_api_version>"
+    And user "user1" has been created with default attributes
+    And group "excludedFromSharing" has been created
+    And group "anotherGroup" has been created
+    And user "user0" has been added to group "excludedFromSharing"
+    And user "user1" has been added to group "anotherGroup"
+    And parameter "shareapi_exclude_groups" of app "core" has been set to "yes"
+    And parameter "shareapi_exclude_groups_list" of app "core" has been set to '["excludedFromSharing"]'
+    And user "user0" has moved file "welcome.txt" to "fileToShare.txt"
+    When user "user0" shares file "fileToShare.txt" with group "anotherGroup" using the sharing API
+    Then the OCS status code should be "<ocs_status_code>"
+    And the HTTP status code should be "<http_status_code>"
+    And as "user1" file "fileToShare.txt" should not exist
+    Examples:
+      | ocs_api_version | ocs_status_code | http_status_code |
+      | 1               | 403             | 200              |
+      | 2               | 403             | 403              |
+
+  Scenario Outline: user who is excluded from sharing tries to share a folder with another user
+    Given using OCS API version "<ocs_api_version>"
+    And user "user1" has been created with default attributes
+    And group "excludedFromSharing" has been created
+    And user "user0" has been added to group "excludedFromSharing"
+    And parameter "shareapi_exclude_groups" of app "core" has been set to "yes"
+    And parameter "shareapi_exclude_groups_list" of app "core" has been set to '["excludedFromSharing"]'
+    And user "user0" has created a folder "folderToShare"
+    When user "user0" shares folder "folderToShare" with user "user1" using the sharing API
+    Then the OCS status code should be "<ocs_status_code>"
+    And the HTTP status code should be "<http_status_code>"
+    And as "user1" folder "folderToShare" should not exist
+    Examples:
+      | ocs_api_version | ocs_status_code | http_status_code |
+      | 1               | 403             | 200              |
+      | 2               | 403             | 403              |
+
+  Scenario Outline: user who is excluded from sharing tries to share a file with a group
+    Given using OCS API version "<ocs_api_version>"
+    And user "user1" has been created with default attributes
+    And group "excludedFromSharing" has been created
+    And group "anotherGroup" has been created
+    And user "user0" has been added to group "excludedFromSharing"
+    And user "user1" has been added to group "anotherGroup"
+    And parameter "shareapi_exclude_groups" of app "core" has been set to "yes"
+    And parameter "shareapi_exclude_groups_list" of app "core" has been set to '["excludedFromSharing"]'
+    And user "user0" has created a folder "folderToShare"
+    When user "user0" shares file "folderToShare" with group "anotherGroup" using the sharing API
+    Then the OCS status code should be "<ocs_status_code>"
+    And the HTTP status code should be "<http_status_code>"
+    And as "user1" file "folderToShare" should not exist
+    Examples:
+      | ocs_api_version | ocs_status_code | http_status_code |
+      | 1               | 403             | 200              |
+      | 2               | 403             | 403              |
+
   Scenario Outline: user shares a file with file name longer than 64 chars to another user
     Given using OCS API version "<ocs_api_version>"
     And user "user1" has been created with default attributes
