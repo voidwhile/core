@@ -537,10 +537,11 @@ class EncryptAllTest extends TestCase {
 	}
 
 	public function testEncryptFileFileId() {
-		$this->createUser('user1', 'user1');
-		\OC::$server->getUserFolder('user1');
+		$uid = $this->getUniqueID('user_');
+		$this->createUser($uid, $uid);
+		\OC::$server->getUserFolder($uid);
 
-		$view = new View('/user1/files');
+		$view = new View("/$uid/files");
 		$view->touch('bar.txt');
 		$oldFileInfo = $view->getFileInfo('bar.txt');
 
@@ -563,11 +564,11 @@ class EncryptAllTest extends TestCase {
 			->setMethods(['setupUserFS', 'getTimeStamp'])
 			->getMock();
 
-		$result = $this->invokePrivate($encryptAll, 'encryptFile', ['/user1/files/bar.txt']);
+		$result = $this->invokePrivate($encryptAll, 'encryptFile', ["/$uid/files/bar.txt"]);
 		$this->assertTrue($result);
 
 		$view1 = new View('/');
-		$fileInfo = $view1->getFileInfo('/user1/files/bar.txt');
+		$fileInfo = $view1->getFileInfo("/$uid/files/bar.txt");
 		$this->assertEquals($fileInfo->getId(), $oldFileInfo->getId());
 	}
 
