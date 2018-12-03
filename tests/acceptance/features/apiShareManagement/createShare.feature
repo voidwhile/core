@@ -255,10 +255,11 @@ Feature: sharing
     When user "user0" creates a public link share using the sharing API with settings
       | path | / |
     Then the OCS status code should be "<ocs_status_code>"
+    And the HTTP status code should be "<http_status_code>"
     Examples:
-      | ocs_api_version | ocs_status_code |
-      | 1               | 403             |
-      | 2               | 403             |
+      | ocs_api_version | ocs_status_code | http_status_code |
+      | 1               | 403             | 200              |
+      | 2               | 403             | 403              |
 
   @public_link_share-feature-required
   Scenario: Only allow 1 link share per file/folder
@@ -369,10 +370,11 @@ Feature: sharing
       | shareType   | 0           |
       | permissions | 0           |
     Then the OCS status code should be "<ocs_status_code>"
+    And the HTTP status code should be "<http_status_code>"
     Examples:
-      | ocs_api_version | ocs_status_code |
-      | 1               | 400             |
-      | 2               | 400             |
+      | ocs_api_version | ocs_status_code | http_status_code |
+      | 1               | 400             | 200              |
+      | 2               | 400             | 400              |
 
   Scenario Outline: user shares a file with file name longer than 64 chars to another user
     Given using OCS API version "<ocs_api_version>"
