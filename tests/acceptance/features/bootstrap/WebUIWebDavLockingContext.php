@@ -70,7 +70,7 @@ class WebUIWebDavLockingContext extends RawMinkContext implements Context {
 	}
 
 	/**
-	 * @When the user unlocks the lock no :lockNumber of the file/folder :file on the webUI
+	 * @When the user unlocks the lock no :lockNumber of file/folder :file on the webUI
 	 *
 	 * @param int $lockNumber
 	 * @param string $file
@@ -85,7 +85,7 @@ class WebUIWebDavLockingContext extends RawMinkContext implements Context {
 	}
 
 	/**
-	 * @Then the file/folder :file should be marked as locked on the webUI
+	 * @Then file/folder :file should be marked as locked on the webUI
 	 *
 	 * @param string $file
 	 *
@@ -102,7 +102,7 @@ class WebUIWebDavLockingContext extends RawMinkContext implements Context {
 	}
 
 	/**
-	 * @Then the file/folder :file should not be marked as locked on the webUI
+	 * @Then file/folder :file should not be marked as locked on the webUI
 	 *
 	 * @param string $file
 	 *
@@ -119,7 +119,7 @@ class WebUIWebDavLockingContext extends RawMinkContext implements Context {
 	}
 	
 	/**
-	 * @Then the file/folder :file should be marked as locked by user :lockedBy in the locks tab of the details panel on the webUI
+	 * @Then file/folder :file should be marked as locked by user :lockedBy in the locks tab of the details panel on the webUI
 	 *
 	 * @param string $file
 	 * @param string $lockedBy
