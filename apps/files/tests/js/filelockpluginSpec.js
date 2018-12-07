@@ -96,6 +96,12 @@ describe('OCA.Files.LockPlugin tests', function() {
 			var $tr = fileList.findFileEl('One.txt');
 			expect($tr.find('.action.action-lock-status').length).toEqual(0);
 		});
+		it('does not file action if no lock exists (empty array)', function() {
+			testFiles[0].activeLocks = [];
+			fileList.setFiles(testFiles);
+			var $tr = fileList.findFileEl('One.txt');
+			expect($tr.find('.action.action-lock-status').length).toEqual(0);
+		});
 		it('opens locks sidebar tab on click', function() {
 			var showDetailsViewStub = sinon.stub(OCA.Files.FileList.prototype, 'showDetailsView');
 			fileList.setFiles(testFiles);

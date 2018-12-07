@@ -134,7 +134,7 @@
 				render: function(actionSpec, isDefault, context) {
 					var $file = context.$file;
 					var isLocked = $file.data('activelocks');
-					if (isLocked) {
+					if (isLocked && isLocked.length > 0) {
 						var $actionLink = $(self.renderLink());
 						context.$file.find('a.name>span.fileactions').append($actionLink);
 						return $actionLink;
