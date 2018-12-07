@@ -15,9 +15,6 @@
 		'{{#each locks}}' +
 		'<div class="lock-entry" data-index="{{index}}">' +
 		'<div style="display: inline;">{{displayText}}</div>' +
-		// TODO: no inline css
-		'<a href="#" class="unlock" style="float: right" title="{{unlockLabel}}">' +
-		'<span class="icon icon-lock-open" style="display: block" /></a>' +
 		'</div>' +
 		'{{else}}' +
 		'<div class="empty">{{emptyResultLabel}}</div>' +
@@ -25,11 +22,16 @@
 		'';
 
 	function formatLocks(locks) {
+		var client = OC.Files.getClient();
+
 		return _.map(locks, function(lock, index) {
+			var path = client.getRelativePath(lock.lockroot) || lock.lockroot;
+
+			// TODO: what if user in root doesn't match ?
+
 			return {
 				index: index,
-				displayText: t('files', '{owner} has locked this resource via {root}', {owner: lock.owner, root: lock.lockroot}),
-				unlockLabel: t('files', 'Unlock'),
+				displayText: t('files', '{owner} has locked this resource via {path}', {owner: lock.owner, path: path}),
 				locktoken: lock.locktoken,
 				lockroot: lock.lockroot
 			};
@@ -43,35 +45,6 @@
 		/** @lends OCA.Files.LockTabView.prototype */ {
 			id: 'lockTabView',
 			className: 'tab lockTabView',
-
-			events: {
-				'click a.unlock': '_onClickUnlock'
-			},
-
-			_onClickUnlock: function (event) {
-				var self = this;
-				var $target = $(event.target).closest('.lock-entry');
-				var lockIndex = parseInt($target.attr('data-index'), 10);
-
-				var currentLock = this.model.get('activeLocks')[lockIndex];
-
-				// FIXME: move to FileInfoModel
-				this.model._filesClient.getClient().request('UNLOCK',
-					currentLock.lockroot,
-					{
-						'Lock-Token': currentLock.locktoken
-					}).then(function (result) {
-						if (result.status === 204) {
-							var locks = self.model.get('activeLocks');
-							locks.splice(lockIndex, 1);
-							self.model.set('activeLocks', locks);
-							self.render();
-						} else {
-							// TODO: add more information
-							OC.Notification.show('Unlock failed with status: ' + result.status);
-						}
-				});
-			},
 
 			getLabel: function () {
 				return t('files', 'Locks');

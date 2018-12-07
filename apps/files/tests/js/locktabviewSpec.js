@@ -85,38 +85,4 @@ describe('OCA.Files.LockTabView tests', function() {
 			expect($lock2.first().text()).toEqual('some guy has locked this resource via /owncloud/remote.php/dav/files/currentuser/basepath/One.txt');
 		});
 	});
-	describe('unlocking', function() {
-		var requestDeferred;
-		var requestStub;
-
-		beforeEach(function() {
-			requestDeferred = new $.Deferred();
-			requestStub = sinon.stub(dav.Client.prototype, 'request').returns(requestDeferred.promise());
-		});
-		afterEach(function() { 
-			requestStub.restore(); 
-		});
-		
-		it('clicking action sends unlock request', function() {
-			view.setFileInfo(fileInfoModel);
-			expect(view.$('.lock-entry').length).toEqual(2);
-			view.$('.lock-entry').eq(1).find('.unlock').click();
-
-			expect(requestStub.calledOnce).toEqual(true);
-			expect(requestStub.getCall(0).args[0]).toEqual('UNLOCK');
-			expect(requestStub.getCall(0).args[1]).toEqual('/owncloud/remote.php/dav/files/currentuser/basepath/One.txt');
-			expect(requestStub.getCall(0).args[2]).toEqual({'Lock-Token': 'anothertoken'});
-
-			requestDeferred.resolve({
-				status: 204,
-				body: ''
-			});
-
-			// only one lock left
-			expect(view.$('.lock-entry').length).toEqual(1);
-			var $lock1 = view.$('.lock-entry').eq(0);
-
-			expect($lock1.first().text()).toEqual('some girl has locked this resource via /owncloud/remote.php/dav/files/currentuser/basepath');
-		});
-	});
 });
