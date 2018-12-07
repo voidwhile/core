@@ -65,6 +65,15 @@ describe('OCA.Files.LockTabView tests', function() {
 		view.remove();
 		view = undefined;
 	});
+	describe('visibility', function() {
+		it('displays tab when locks are set', function() {
+			expect(view.canDisplay(fileInfoModel)).toEqual(true);
+		});
+		it('does not display tab when no locks are set', function() {
+			fileInfoModel.set('activeLocks', []);
+			expect(view.canDisplay(fileInfoModel)).toEqual(false);
+		});
+	});
 	describe('rendering', function() {
 		it('renders list of locks', function() {
 			view.setFileInfo(fileInfoModel);

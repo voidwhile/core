@@ -96,6 +96,18 @@
 					emptyResultLabel: t('files', 'Resource is not locked'),
 					locks: formatLocks(this.model.get('activeLocks'))
 				}));
+			},
+
+			/**
+			 * Returns whether the current tab is able to display
+			 * the given file info, for example based on mime type.
+			 *
+			 * @param {OCA.Files.FileInfoModel} fileInfo file info model
+			 * @return {bool} whether to display this tab
+			 */
+			canDisplay: function(fileInfo) {
+				// don't display if no lock is set
+				return fileInfo && fileInfo.get('activeLocks') && fileInfo.get('activeLocks').length > 0;
 			}
 		});
 
