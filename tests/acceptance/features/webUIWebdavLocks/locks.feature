@@ -696,14 +696,19 @@ Feature: Locks
       |sharer    |
     And the user "sharer" has locked file "lorem.txt" setting following properties
       | lockscope | <lockscope> |
-    And the user "sharer" has locked folder "lorem.txt" setting following properties
+    And the user "sharer" has locked folder "simple-folder" setting following properties
       | lockscope | <lockscope> |
     And user "sharer" has shared file "lorem.txt" with user "brand-new-user"
+    And user "sharer" has shared folder "simple-folder" with user "brand-new-user"
     And the user has browsed to the files page
     When the user unshares file "lorem (2).txt" using the webUI
+    And the user unshares folder "simple-folder (2)" using the webUI
     Then as "brand-new-user" file "lorem (2).txt" should not exist
-    And file "lorem.txt (2)" should not be listed on the webUI
+    And as "brand-new-user" folder "simple-folder (2)" should not exist
+    And file "lorem (2).txt" should not be listed on the webUI
+    And folder "simple-folder (2)" should not be listed on the webUI
     And 1 locks should be reported for file "lorem.txt" of user "sharer" by the WebDAV API
+    And 1 locks should be reported for file "simple-folder/lorem.txt" of user "sharer" by the WebDAV API
     Examples:
       | lockscope |
       | exclusive |
