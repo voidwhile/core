@@ -104,6 +104,8 @@ describe('OCA.Files.LockTabView tests', function() {
 		});
 		
 		it('sends unlock request then updates model', function() {
+			var changeEvent = sinon.stub();
+
 			view.setFileInfo(fileInfoModel);
 			expect(view.$('.lock-entry').length).toEqual(2);
 			view.$('.lock-entry').eq(1).find('.unlock').click();
@@ -112,6 +114,8 @@ describe('OCA.Files.LockTabView tests', function() {
 			expect(requestStub.getCall(0).args[0]).toEqual('UNLOCK');
 			expect(requestStub.getCall(0).args[1]).toEqual('/owncloud/remote.php/dav/files/currentuser/basepath/One.txt');
 			expect(requestStub.getCall(0).args[2]).toEqual({'Lock-Token': 'anothertoken'});
+
+			fileInfoModel.on('change:activeLocks', changeEvent);
 
 			requestDeferred.resolve({
 				status: 204,
@@ -125,6 +129,7 @@ describe('OCA.Files.LockTabView tests', function() {
 			expect($lock1.first().text()).toEqual('some girl has locked this resource via /basepath');
 
 			expect(fileInfoModel.get('activeLocks')).toEqual([lockData1]);
+			expect(changeEvent.calledOnce).toEqual(true);
 		});
 		it('adjusts message when removing last lock', function() {
 			fileInfoModel.set('activeLocks', [lockData1]);

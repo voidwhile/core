@@ -67,8 +67,8 @@
 						'Lock-Token': currentLock.locktoken
 					}).then(function (result) {
 						if (result.status === 204) {
-							var locks = self.model.get('activeLocks') || [];
-							locks.splice(lockIndex, 1);
+							// implicit clone of array else backbone doesn't fire change event
+							var locks = _.without(self.model.get('activeLocks') || [], currentLock);
 							self.model.set('activeLocks', locks);
 							self.render();
 						}
