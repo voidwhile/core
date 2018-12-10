@@ -76,7 +76,7 @@
 			fileList._createRow = function(fileData) {
 				var $tr = oldCreateRow.apply(this, arguments);
 				if (fileData.activeLocks) {
-					$tr.attr('data-activeLocks', JSON.stringify(fileData.activeLocks));
+					$tr.attr('data-activelocks', JSON.stringify(fileData.activeLocks));
 				}
 				return $tr;
 			};
