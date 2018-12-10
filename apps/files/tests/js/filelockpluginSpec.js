@@ -38,7 +38,7 @@ describe('OCA.Files.LockPlugin tests', function() {
 			locktype: 'write',
 			lockroot: '/owncloud/remote.php/dav/files/currentuser/basepath',
 			depth: 'infinite',
-			timeout: '12345',
+			timeout: 'Second-12345',
 			locktoken: 'tehtoken',
 			owner: 'lock owner'
 		};
@@ -167,7 +167,7 @@ describe('OCA.Files.LockPlugin tests', function() {
 				'							<d:href>/owncloud/remote.php/dav/files/currentuser/basepath</d:href>' +
 				'						</d:lockroot>' +
 				'						<d:depth>infinite</d:depth>' +
-				'						<d:timeout>12345</d:timeout>' +
+				'						<d:timeout>Second-12345</d:timeout>' +
 				'						<d:locktoken>' +
 				'							<d:href>tehtoken</d:href>' +
 				'						</d:locktoken>' +

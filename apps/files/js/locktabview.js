@@ -25,11 +25,16 @@
 		'';
 
 	function formatLocks(locks) {
+		var client = OC.Files.getClient();
+
 		return _.map(locks, function(lock, index) {
+			var path = client.getRelativePath(lock.lockroot) || lock.lockroot;
+
+			// TODO: what if user in root doesn't match ?
+
 			return {
 				index: index,
-				displayText: t('files', '{owner} has locked this resource via {root}', {owner: lock.owner, root: lock.lockroot}),
-				unlockLabel: t('files', 'Unlock'),
+				displayText: t('files', '{owner} has locked this resource via {path}', {owner: lock.owner, path: path}),
 				locktoken: lock.locktoken,
 				lockroot: lock.lockroot
 			};
@@ -62,13 +67,16 @@
 						'Lock-Token': currentLock.locktoken
 					}).then(function (result) {
 						if (result.status === 204) {
-							var locks = self.model.get('activeLocks');
+							var locks = self.model.get('activeLocks') || [];
 							locks.splice(lockIndex, 1);
 							self.model.set('activeLocks', locks);
 							self.render();
+						}
+						else if (result.status === 403) {
+							OC.Notification.show(t('files', 'Could not unlock, please contact the lock owner {owner}', {owner: currentLock.owner}));
 						} else {
 							// TODO: add more information
-							OC.Notification.show('Unlock failed with status: ' + result.status);
+							OC.Notification.show(t('files', 'Unlock failed with status {status}', {status: result.status}));
 						}
 				});
 			},

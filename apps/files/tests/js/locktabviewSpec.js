@@ -21,19 +21,23 @@
 
 /* global dav */
 describe('OCA.Files.LockTabView tests', function() {
+	var currentUserStub;
+	var notificationStub;
 	var view, fileInfoModel;
-	var fetchStub;
 	var lockData1;
 	var lockData2;
 
 	beforeEach(function() {
+		currentUserStub = sinon.stub(OC, 'getCurrentUser').returns({uid: 'currentuser'});
+		notificationStub = sinon.stub(OC.Notification, 'show');
+
 		view = new OCA.Files.LockTabView();
 		lockData1 = {
 			lockscope: 'shared',
 			locktype: 'read',
 			lockroot: '/owncloud/remote.php/dav/files/currentuser/basepath',
 			depth: 'infinite',
-			timeout: '12345',
+			timeout: 'Second-12345',
 			locktoken: 'tehtoken',
 			owner: 'some girl'
 		};
@@ -42,7 +46,7 @@ describe('OCA.Files.LockTabView tests', function() {
 			locktype: 'read',
 			lockroot: '/owncloud/remote.php/dav/files/currentuser/basepath/One.txt',
 			depth: '0',
-			timeout: '12345',
+			timeout: 'Second-12345',
 			locktoken: 'anothertoken',
 			owner: 'some guy'
 		};
@@ -62,6 +66,8 @@ describe('OCA.Files.LockTabView tests', function() {
 		view.render();
 	});
 	afterEach(function() {
+		currentUserStub.restore();
+		notificationStub.restore();
 		view.remove();
 		view = undefined;
 	});
@@ -81,8 +87,8 @@ describe('OCA.Files.LockTabView tests', function() {
 			var $lock1 = view.$('.lock-entry').eq(0);
 			var $lock2 = view.$('.lock-entry').eq(1);
 
-			expect($lock1.first().text()).toEqual('some girl has locked this resource via /owncloud/remote.php/dav/files/currentuser/basepath');
-			expect($lock2.first().text()).toEqual('some guy has locked this resource via /owncloud/remote.php/dav/files/currentuser/basepath/One.txt');
+			expect($lock1.first().text()).toEqual('some girl has locked this resource via /basepath');
+			expect($lock2.first().text()).toEqual('some guy has locked this resource via /basepath/One.txt');
 		});
 	});
 	describe('unlocking', function() {
@@ -97,7 +103,7 @@ describe('OCA.Files.LockTabView tests', function() {
 			requestStub.restore(); 
 		});
 		
-		it('clicking action sends unlock request', function() {
+		it('sends unlock request then updates model', function() {
 			view.setFileInfo(fileInfoModel);
 			expect(view.$('.lock-entry').length).toEqual(2);
 			view.$('.lock-entry').eq(1).find('.unlock').click();
@@ -116,7 +122,61 @@ describe('OCA.Files.LockTabView tests', function() {
 			expect(view.$('.lock-entry').length).toEqual(1);
 			var $lock1 = view.$('.lock-entry').eq(0);
 
-			expect($lock1.first().text()).toEqual('some girl has locked this resource via /owncloud/remote.php/dav/files/currentuser/basepath');
+			expect($lock1.first().text()).toEqual('some girl has locked this resource via /basepath');
+
+			expect(fileInfoModel.get('activeLocks')).toEqual([lockData1]);
+		});
+		it('adjusts message when removing last lock', function() {
+			fileInfoModel.set('activeLocks', [lockData1]);
+			view.setFileInfo(fileInfoModel);
+			expect(view.$('.lock-entry').length).toEqual(1);
+			view.$('.lock-entry').eq(0).find('.unlock').click();
+
+			requestDeferred.resolve({
+				status: 204,
+				body: ''
+			});
+
+			// only one lock left
+			expect(view.$('.lock-entry').length).toEqual(0);
+
+			expect(view.$('.empty').text()).toEqual('Resource is not locked');
+
+			expect(fileInfoModel.get('activeLocks')).toEqual([]);
+		});
+		it('displays message when unlock is forbidden', function() {
+			view.setFileInfo(fileInfoModel);
+			expect(view.$('.lock-entry').length).toEqual(2);
+			view.$('.lock-entry').eq(1).find('.unlock').click();
+
+			requestDeferred.resolve({
+				status: 403,
+				body: ''
+			});
+
+			// locks left as is
+			expect(view.$('.lock-entry').length).toEqual(2);
+			expect(fileInfoModel.get('activeLocks')).toEqual([lockData1, lockData2]);
+			
+			expect(notificationStub.calledOnce).toEqual(true);
+			expect(notificationStub.getCall(0).args[0]).toContain('Could not unlock, please contact the lock owner some guy');
+		});
+		it('displays error message when unlock failed for unknown reason', function() {
+			view.setFileInfo(fileInfoModel);
+			expect(view.$('.lock-entry').length).toEqual(2);
+			view.$('.lock-entry').eq(1).find('.unlock').click();
+
+			requestDeferred.resolve({
+				status: 500,
+				body: ''
+			});
+
+			// locks left as is
+			expect(view.$('.lock-entry').length).toEqual(2);
+			expect(fileInfoModel.get('activeLocks')).toEqual([lockData1, lockData2]);
+			
+			expect(notificationStub.calledOnce).toEqual(true);
+			expect(notificationStub.getCall(0).args[0]).toContain('Unlock failed with status 500');
 		});
 	});
 });
