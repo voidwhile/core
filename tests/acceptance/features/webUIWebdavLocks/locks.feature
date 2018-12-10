@@ -417,7 +417,7 @@ Feature: Locks
     And the user has browsed to the files page
     When the user deletes file "lorem.txt" using the webUI
     Then notifications should be displayed on the webUI with the text
-        | The The file "lorem.txt" is locked and cannot be deleted. |
+        | The file "lorem.txt" is locked and cannot be deleted. |
     And as "brand-new-user" file "lorem.txt" should exist
     And file "lorem.txt" should be listed on the webUI
     And file "lorem.txt" should be marked as locked on the webUI
@@ -545,7 +545,7 @@ Feature: Locks
     When the public accesses the last created public link using the webUI
     And the user deletes folder "lorem.txt" using the webUI
     Then notifications should be displayed on the webUI with the text
-      | The The file "lorem.txt" is locked and cannot be deleted. |
+      | The file "lorem.txt" is locked and cannot be deleted. |
     And as "brand-new-user" file "simple-folder/lorem.txt" should exist
     And 1 locks should be reported for file "simple-folder/lorem.txt" of user "brand-new-user" by the WebDAV API
     Examples:
