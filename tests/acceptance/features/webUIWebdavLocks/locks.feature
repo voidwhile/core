@@ -401,7 +401,7 @@ Feature: Locks
     And the user has browsed to the files page
     When the user unlocks the lock no 1 of file "lorem.txt" on the webUI
     Then notifications should be displayed on the webUI with the text
-        | Unlock failed with status: 403 |
+        | Could not unlock, please contact the lock owner receiver1 |
     And file "lorem.txt" should be marked as locked on the webUI
     And file "lorem.txt" should be marked as locked by user "receiver1" in the locks tab of the details panel on the webUI
     And 1 locks should be reported for file "lorem.txt" of user "brand-new-user" by the WebDAV API
@@ -497,7 +497,7 @@ Feature: Locks
     And the user has browsed to the files page
     When the user uploads overwriting file "lorem.txt" using the webUI
     Then notifications should be displayed on the webUI with the text
-        | Locked |
+        | The file lorem.txt is currently locked, please try again later |
     And the content of "lorem.txt" should not have changed
     And file "lorem.txt" should be marked as locked on the webUI
     And file "lorem.txt" should be marked as locked by user "brand-new-user" in the locks tab of the details panel on the webUI
@@ -513,7 +513,7 @@ Feature: Locks
     And the user has opened folder "simple-folder" using the webUI
     When the user uploads overwriting file "lorem.txt" using the webUI
     Then notifications should be displayed on the webUI with the text
-        | Locked |
+        | The file lorem.txt is currently locked, please try again later |
     And the content of "lorem.txt" should not have changed
     And file "lorem.txt" should be marked as locked on the webUI
     And file "lorem.txt" should be marked as locked by user "brand-new-user" in the locks tab of the details panel on the webUI
@@ -599,7 +599,7 @@ Feature: Locks
     When the public accesses the last created public link using the webUI
     And the user uploads overwriting file "lorem.txt" using the webUI
     Then notifications should be displayed on the webUI with the text
-        | Locked |
+        | The file lorem.txt is currently locked, please try again later |
     And the content of "simple-folder/lorem.txt" should not have changed
     And 1 locks should be reported for file "simple-folder/lorem.txt" of user "brand-new-user" by the WebDAV API
     Examples:
